@@ -183,6 +183,10 @@ class HandleFactor(GetDataMain):
         se_factor = np.log(TotalMVDf["TotalMV"])
         se_factor.name = 'Size'
         return se_factor
+    
+    def remove_global(self):
+        self.global_dic={}
+        return
 
     def handle_beta(self, trade_date, df_total_init, year_trade):
         # 去上市不满半年,次新股

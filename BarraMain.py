@@ -20,7 +20,7 @@ class BarraMain:
 
     def get_calc(self, trade_date, next_date):
         df_total = self.GetDataMainDemo.get_index_weight(trade_date, index_code=self.calc_param['market_inner']
-                                                         ).set_index("InnerCode").iloc[:300]
+                                                         ).set_index("InnerCode")
         total_code = df_total.index.tolist()
         df_next_return = self.GetDataMainDemo.get_stock_hq(start_date=next_date, end_date=next_date,
                                                            inner_code=total_code).iloc[0]
@@ -35,6 +35,7 @@ class BarraMain:
             self.logger.info("处理大类因子：%s;" % factor)
             se_factor = self.HandleFactorDemo.handle_factol_main(factor, calc_param=calc_param)
             df_factol_list.append(se_factor)
+        self.HandleFactorDemo.remove_global()
         df_factor = pd.concat(df_factol_list,axis=1,sort=True).dropna(axis=0)
         return df_factor
 
@@ -44,6 +45,7 @@ class BarraMain:
                                                              self.calc_param["Period"])
         self.logger.info("起始日期：%s;截止日期:%s" % (trade_date_list[0], trade_date_list[-1]))
         for trade_date, next_date in zip(trade_date_list[:-1], trade_date_list[1:]):
+            self.logger.info("计算交易日:%s"%trade_date)
             df_factor = self.get_calc(trade_date, next_date)
             df_factor.to_csv(self.file_path+"%s.csv"%trade_date)
 
